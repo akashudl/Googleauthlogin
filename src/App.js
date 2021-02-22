@@ -1,59 +1,47 @@
 import logo from './logo.svg';
 import './App.css';
-import Signup from "./Signup";
-import firebase from 'firebase';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { Component } from 'react';
-firebase .initializeApp({
-  apiKey:"AIzaSyBpSRGGM7yLWedZ_CjtPkIucb3EnTRAAGY",
-  authDomain :"auth-development-9c261.firebaseapp.com"
-})
+import React, {Component} from 'react';
+import TodoComponents from "./Components/TodoComponent";
+import {BrowserRouter as Router,Route, Switch,Link}from 'react-router-dom';
+import  './bootstrap.css';
+import LoginComponent from "./Components/LoginComponent";
+import LogoutComponents from "./Components/LogoutComponent";
+import Authenticationservice from "./Components/Authenticationservice.js";
+import AuthenticatedRoute from "./Components/AuthenticatedRoute";
+import ErrorComponent from "./Components/ErrorComponent";
+import Header from "./Components/HeaderComponent";
+import Welcome from "./Components/Welcome";
+import Footer from "./Components/Footer";
+import UpdatetodoComponents from "./Components/UpdatetodoComponents";
 class App extends Component
-{ 
-  
-  state={isSignedin:false}
+ {  
+   render()
+ {
 
-uiConfig = {
-  signInFlow: "popup",
-  signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-  ],
-  callbacks: {
-    signInSuccess: () => false
+  return (
+         <div className="App" >
+           <Router>
+             <>
+             <Header/>
+             <Switch>
+             <Route path="/" exact component={LoginComponent}/>
+             <Route path="/login" component={LoginComponent}/>
+             <AuthenticatedRoute path="/welcome/:name" component={Welcome}/>
+             <AuthenticatedRoute path="/todo" component={TodoComponents}/>
+             <AuthenticatedRoute path="/logout" component={LogoutComponents}/>
+             <AuthenticatedRoute path="/todos/:id" component={UpdatetodoComponents}/>
+             <Route component={ErrorComponent}/>
+             </Switch>
+             <Footer/>
+             </>
+           </Router>
+           </div>
+  );
+   
   }
 }
-componentDidMount=()=>
-{
 
-  firebase.auth().onAuthStateChanged(user=>{
-    this.setState({isSignedin:!!user})
-    console.log("user",user);
-  })
 
-}
 
-  render()
-  {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p> My react Firebase Project</p>
-       {this.state.isSignedin ?(
-         <>
-         <div>Signed in</div>
-         <h1>Welcome {firebase.auth().currentUser.displayName}</h1>
-         <button onClick={()=>firebase.auth().signOut()}>Sign out</button>
-         </>
-         ):(
-        <StyledFirebaseAuth
-          uiConfig={this.uiConfig}
-          firebaseAuth={firebase.auth()}
-        />
-      )}
-      </header>
-      
-    </div>
-  );
-}
-}
-export default App;
+
+  export default App;
